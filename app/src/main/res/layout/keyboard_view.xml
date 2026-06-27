@@ -2,67 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:background="#1a1a2e"
-    android:paddingStart="12dp"
-    android:paddingEnd="12dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:padding="6dp">
 
-    <!-- نمایش متن ذخیره‌شده -->
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="44dp"
+        android:text="▶ شروع"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:backgroundTint="#0f3460"
+        android:layout_marginEnd="4dp" />
+
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="44dp"
+        android:text="⏹ خاموش"
+        android:textSize="14sp"
+        android:textColor="#ffffff"
+        android:backgroundTint="#c0392b"
+        android:enabled="false"
+        android:layout_marginStart="4dp" />
+
     <TextView
         android:id="@+id/tv_text_preview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#0d0d1a"
-        android:textColor="#cccccc"
-        android:textSize="12sp"
-        android:padding="8dp"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:layout_marginBottom="8dp"
-        android:text="..." />
+        android:layout_width="0dp"
+        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
-    <!-- دکمه‌های شروع و خاموش -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_start"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="52dp"
-            android:text="▶  شروع"
-            android:textSize="16sp"
-            android:textColor="#ffffff"
-            android:backgroundTint="#0f3460"
-            android:layout_marginEnd="6dp" />
-
-        <Button
-            android:id="@+id/btn_stop"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="52dp"
-            android:text="⏹  خاموش"
-            android:textSize="16sp"
-            android:textColor="#ffffff"
-            android:backgroundTint="#c0392b"
-            android:enabled="false"
-            android:layout_marginStart="6dp" />
-
-    </LinearLayout>
-
-    <!-- نوار وضعیت -->
     <TextView
         android:id="@+id/tv_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="#888888"
-        android:textSize="11sp"
-        android:gravity="center"
-        android:paddingTop="6dp"
-        android:text="آماده | دکمه شروع را بزنید" />
+        android:layout_width="0dp"
+        android:layout_weight="0"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
 </LinearLayout>

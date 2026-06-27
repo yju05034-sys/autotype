@@ -16,19 +16,15 @@ public class AutoTypeIME extends InputMethodService {
 
     private boolean isRunning = false;
     private String savedText = "";
-    private TextView tvPreview, tvStatus;
     private Button btnStart, btnStop;
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     public View onCreateInputView() {
         View view = getLayoutInflater().inflate(R.layout.keyboard_view, null);
-        tvPreview = view.findViewById(R.id.tv_text_preview);
-        tvStatus  = view.findViewById(R.id.tv_status);
-        btnStart  = view.findViewById(R.id.btn_start);
-        btnStop   = view.findViewById(R.id.btn_stop);
+        btnStart = view.findViewById(R.id.btn_start);
+        btnStop  = view.findViewById(R.id.btn_stop);
         loadText();
-        updatePreview();
         btnStart.setOnClickListener(v -> startLoop());
         btnStop.setOnClickListener(v -> stopLoop());
         return view;
@@ -38,9 +34,8 @@ public class AutoTypeIME extends InputMethodService {
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
         loadText();
-        updatePreview();
         if (isRunning) {
-            handler.postDelayed(this::pasteText, 60);
+            handler.postDelayed(this::pasteText, 30);
         }
     }
 
@@ -49,24 +44,11 @@ public class AutoTypeIME extends InputMethodService {
         savedText = prefs.getString("text", "");
     }
 
-    private void updatePreview() {
-        if (tvPreview == null) return;
-        if (savedText.isEmpty()) {
-            tvPreview.setText("ابتدا در برنامه AutoType متن ذخیره کنید");
-        } else {
-            tvPreview.setText(savedText);
-        }
-    }
-
     private void startLoop() {
-        if (savedText.isEmpty()) {
-            setStatus("متنی ذخیره نشده!");
-            return;
-        }
+        if (savedText.isEmpty()) return;
         isRunning = true;
         btnStart.setEnabled(false);
         btnStop.setEnabled(true);
-        setStatus("فعال | Enter بزن تا دوباره paste شه");
         pasteText();
     }
 
@@ -74,21 +56,19 @@ public class AutoTypeIME extends InputMethodService {
         isRunning = false;
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
-        setStatus("متوقف شد");
     }
 
     private void pasteText() {
         if (!isRunning) return;
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) {
-            handler.postDelayed(this::pasteText, 100);
+            handler.postDelayed(this::pasteText, 50);
             return;
         }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(Integer.MAX_VALUE, Integer.MAX_VALUE);
         ic.commitText(savedText, 1);
         ic.endBatchEdit();
-        setStatus("متن paste شد | حالا Enter بزن");
     }
 
     @Override
@@ -98,7 +78,7 @@ public class AutoTypeIME extends InputMethodService {
             if (ic != null) {
                 ic.performEditorAction(EditorInfo.IME_ACTION_SEND);
             }
-            handler.postDelayed(this::pasteText, 80);
+            handler.postDelayed(this::pasteText, 30);
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -107,11 +87,5 @@ public class AutoTypeIME extends InputMethodService {
     @Override
     public boolean onEvaluateFullscreenMode() {
         return false;
-    }
-
-    private void setStatus(String msg) {
-        handler.post(() -> {
-            if (tvStatus != null) tvStatus.setText(msg);
-        });
     }
 }
