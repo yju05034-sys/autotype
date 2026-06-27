@@ -1,5 +1,4 @@
 package com.autotype.keyboard;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,48 +9,36 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 public class SettingsActivity extends Activity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
-        EditText etText     = findViewById(R.id.et_text);
-        Button btnSave      = findViewById(R.id.btn_save);
-        Button btnEnable    = findViewById(R.id.btn_enable);
-        Button btnSelect    = findViewById(R.id.btn_select);
-        TextView tvStatus   = findViewById(R.id.tv_status);
-
+        EditText etText   = findViewById(R.id.et_text);
+        Button btnSave    = findViewById(R.id.btn_save);
+        Button btnStart   = findViewById(R.id.btn_start);
+        Button btnStop    = findViewById(R.id.btn_stop);
+        Button btnEnable  = findViewById(R.id.btn_enable);
+        Button btnSelect  = findViewById(R.id.btn_select);
+        TextView tvStatus = findViewById(R.id.tv_status);
         SharedPreferences prefs = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
-
-        // نمایش متن ذخیره شده
-        String existing = prefs.getString("text", "");
-        if (!existing.isEmpty()) {
-            etText.setText(existing);
-        }
-
-        // ذخیره متن
+        etText.setText(prefs.getString("text", ""));
         btnSave.setOnClickListener(v -> {
-            String text = etText.getText().toString();
-            if (text.isEmpty()) {
-                tvStatus.setText("❌ متن خالی است!");
-                return;
-            }
-            prefs.edit().putString("text", text).apply();
-            tvStatus.setText("✅ متن ذخیره شد!");
+            prefs.edit().putString("text", etText.getText().toString()).apply();
+            tvStatus.setText("✅ ذخیره شد");
         });
-
-        // فعال‌سازی در تنظیمات سیستم
-        btnEnable.setOnClickListener(v ->
-            startActivity(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))
-        );
-
-        // انتخاب کیبورد
-        btnSelect.setOnClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) imm.showInputMethodPicker();
+        btnStart.setOnClickListener(v -> {
+            prefs.edit().putBoolean("running", true).apply();
+            if (AutoTypeIME.instance != null) AutoTypeIME.instance.startLoop();
+            tvStatus.setText("🟢 در حال اجرا");
+            finish();
         });
+        btnStop.setOnClickListener(v -> {
+            prefs.edit().putBoolean("running", false).apply();
+            if (AutoTypeIME.instance != null) AutoTypeIME.instance.stopLoop();
+            tvStatus.setText("⏹ متوقف");
+        });
+        btnEnable.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)));
+        btnSelect.setOnClickListener(v -> ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).showInputMethodPicker());
     }
 }

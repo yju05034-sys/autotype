@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="AutoType Keyboard"
+        android:label="AutoType"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
             android:name=".SettingsActivity"
@@ -23,13 +23,5 @@
             </intent-filter>
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
-        <receiver
-            android:name=".ControlReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.autotype.START" />
-                <action android:name="com.autotype.STOP" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>
