@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1a1a2e">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⌨ AutoType Keyboard"
+            android:textColor="#e94560"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="متن خودکار:"
+            android:textColor="#aaaaaa"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/et_text"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="#16213e"
+            android:textColor="#ffffff"
+            android:textColorHint="#555577"
+            android:hint="متن دلخواه را اینجا بنویسید..."
+            android:padding="12dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="💾  ذخیره"
+            android:textSize="16sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#0f3460"
+            android:layout_marginTop="12dp" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#4ecca3"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#333355"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="فعال‌سازی کیبورد:"
+            android:textColor="#e94560"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="14dp" />
+
+        <Button
+            android:id="@+id/btn_enable"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="⚙  فعال کردن در تنظیمات سیستم"
+            android:textSize="14sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#533483"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/btn_select"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="✅  انتخاب AutoType به عنوان کیبورد"
+            android:textSize="14sp"
+            android:textColor="#ffffff"
+            android:backgroundTint="#0f3460" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="\n۱. متن بنویس → ذخیره\n۲. فعال کردن → AutoType را تیک بزن\n۳. انتخاب → AutoType را انتخاب کن\n۴. در هر اپی کیبورد AutoType بالا میاد\n۵. شروع → متن paste میشه → Enter بزن → تکرار"
+            android:textColor="#777799"
+            android:textSize="12sp"
+            android:layout_marginTop="16dp"
+            android:lineSpacingExtra="4dp" />
+
+    </LinearLayout>
+</ScrollView>
