@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -38,7 +37,7 @@ public class AutoTypeIME extends InputMethodService {
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
         loadText();
-        if (isRunning) handler.postDelayed(this::pasteText, 20);
+        if (isRunning) handler.postDelayed(this::sendFiveTimes, 20);
     }
     private void loadText() {
         SharedPreferences p = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
@@ -49,36 +48,28 @@ public class AutoTypeIME extends InputMethodService {
         if (savedText.isEmpty()) return;
         isRunning = true;
         showNotif(true);
-        handler.post(this::pasteText);
+        handler.post(this::sendFiveTimes);
     }
     public void stopLoop() {
         isRunning = false;
         showNotif(false);
     }
-    private void pasteText() {
+    private void sendFiveTimes() {
         if (!isRunning) return;
         InputConnection ic = getCurrentInputConnection();
-        if (ic == null) { handler.postDelayed(this::pasteText, 30); return; }
+        if (ic == null) { handler.postDelayed(this::sendFiveTimes, 30); return; }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        ic.commitText(savedText, 1);
-        ic.endBatchEdit();
-    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ENTER && isRunning) {
-            InputConnection ic = getCurrentInputConnection();
-            if (ic != null) ic.performEditorAction(EditorInfo.IME_ACTION_SEND);
-            handler.postDelayed(this::pasteText, 20);
-            return true;
+        for (int i = 0; i < 5; i++) {
+            ic.commitText(savedText + "\n", 1);
         }
-        return super.onKeyDown(keyCode, event);
+        ic.endBatchEdit();
     }
     @Override
     public boolean onEvaluateFullscreenMode() { return false; }
     private void showNotif(boolean running) {
         PendingIntent pi = PendingIntent.getBroadcast(this, 0,
-            new Intent(running ? "com.autotype.STOP" : "com.autotype.START"),
+            new Intent(running ? "com.autotype.STOP" : "com.autotype.START").setPackage(getPackageName()),
             PendingIntent.FLAG_IMMUTABLE);
         Notification n = new Notification.Builder(this, CH)
             .setSmallIcon(android.R.drawable.ic_menu_edit)
