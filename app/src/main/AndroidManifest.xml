@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application
         android:allowBackup="true"
         android:label="AutoType Keyboard"
         android:theme="@style/Theme.AppCompat.Light">
-
-        <!-- اپ تنظیمات برای ذخیره متن -->
         <activity
             android:name=".SettingsActivity"
             android:label="AutoType - تنظیمات"
@@ -16,8 +14,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!-- سرویس کیبورد IME -->
         <service
             android:name=".AutoTypeIME"
             android:label="AutoType Keyboard"
@@ -30,6 +26,13 @@
                 android:name="android.view.im"
                 android:resource="@xml/method" />
         </service>
-
+        <receiver
+            android:name=".ControlReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.autotype.START" />
+                <action android:name="com.autotype.STOP" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

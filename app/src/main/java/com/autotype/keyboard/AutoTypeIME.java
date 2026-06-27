@@ -1,103 +1,60 @@
 package com.autotype.keyboard;
-
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.PixelFormat;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
-import android.widget.Button;
-
 public class AutoTypeIME extends InputMethodService {
-
+    public static AutoTypeIME instance;
     private String savedText = "";
     private boolean isRunning = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private WindowManager windowManager;
-    private View floatView;
-
+    private NotificationManager notifManager;
+    private static final String CH = "autotype";
     @Override
     public void onCreate() {
         super.onCreate();
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        instance = this;
+        notifManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notifManager.createNotificationChannel(new NotificationChannel(CH, "AutoType", NotificationManager.IMPORTANCE_LOW));
+        showNotif(false);
     }
-
     @Override
     public View onCreateInputView() {
         View v = new View(this);
         v.setLayoutParams(new android.view.ViewGroup.LayoutParams(0, 0));
         return v;
     }
-
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
         loadText();
-        showFloatButton();
         if (isRunning) handler.postDelayed(this::pasteText, 20);
     }
-
-    @Override
-    public void onFinishInputView(boolean finishingInput) {
-        super.onFinishInputView(finishingInput);
-        removeFloatButton();
-    }
-
-    private void showFloatButton() {
-        if (floatView != null) return;
-        floatView = LayoutInflater.from(this).inflate(R.layout.float_buttons, null);
-
-        Button btnStart = floatView.findViewById(R.id.btn_start);
-        Button btnStop  = floatView.findViewById(R.id.btn_stop);
-
-        btnStop.setVisibility(View.GONE);
-
-        btnStart.setOnClickListener(v -> {
-            isRunning = true;
-            btnStart.setVisibility(View.GONE);
-            btnStop.setVisibility(View.VISIBLE);
-            pasteText();
-        });
-
-        btnStop.setOnClickListener(v -> {
-            isRunning = false;
-            btnStop.setVisibility(View.GONE);
-            btnStart.setVisibility(View.VISIBLE);
-        });
-
-        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            PixelFormat.TRANSLUCENT
-        );
-        params.gravity = Gravity.BOTTOM | Gravity.END;
-        params.x = 16;
-        params.y = 200;
-
-        windowManager.addView(floatView, params);
-    }
-
-    private void removeFloatButton() {
-        if (floatView != null) {
-            windowManager.removeView(floatView);
-            floatView = null;
-        }
-    }
-
     private void loadText() {
-        SharedPreferences prefs = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
-        savedText = prefs.getString("text", "");
+        SharedPreferences p = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
+        savedText = p.getString("text", "");
     }
-
+    public void startLoop() {
+        loadText();
+        if (savedText.isEmpty()) return;
+        isRunning = true;
+        showNotif(true);
+        handler.post(this::pasteText);
+    }
+    public void stopLoop() {
+        isRunning = false;
+        showNotif(false);
+    }
     private void pasteText() {
         if (!isRunning) return;
         InputConnection ic = getCurrentInputConnection();
@@ -107,7 +64,6 @@ public class AutoTypeIME extends InputMethodService {
         ic.commitText(savedText, 1);
         ic.endBatchEdit();
     }
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_ENTER && isRunning) {
@@ -118,13 +74,24 @@ public class AutoTypeIME extends InputMethodService {
         }
         return super.onKeyDown(keyCode, event);
     }
-
     @Override
     public boolean onEvaluateFullscreenMode() { return false; }
-
+    private void showNotif(boolean running) {
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0,
+            new Intent(running ? "com.autotype.STOP" : "com.autotype.START"),
+            PendingIntent.FLAG_IMMUTABLE);
+        Notification n = new Notification.Builder(this, CH)
+            .setSmallIcon(android.R.drawable.ic_menu_edit)
+            .setContentTitle("AutoType")
+            .setContentText(running ? "در حال اجرا" : "آماده")
+            .addAction(0, running ? "⏹ توقف" : "▶ شروع", pi)
+            .setOngoing(true).build();
+        notifManager.notify(1, n);
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        removeFloatButton();
+        instance = null;
+        notifManager.cancel(1);
     }
 }
