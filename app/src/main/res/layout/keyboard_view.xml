@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<View xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="#1a1a2e"
-    android:padding="6dp">
-
-    <Button
-        android:id="@+id/btn_start"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="44dp"
-        android:text="▶ شروع"
-        android:textSize="14sp"
-        android:textColor="#ffffff"
-        android:backgroundTint="#0f3460"
-        android:layout_marginEnd="4dp" />
-
-    <Button
-        android:id="@+id/btn_stop"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="44dp"
-        android:text="⏹ خاموش"
-        android:textSize="14sp"
-        android:textColor="#ffffff"
-        android:backgroundTint="#c0392b"
-        android:enabled="false"
-        android:layout_marginStart="4dp" />
-
-    <TextView
-        android:id="@+id/tv_text_preview"
-        android:layout_width="0dp"
-        android:layout_weight="0"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/tv_status"
-        android:layout_width="0dp"
-        android:layout_weight="0"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-</LinearLayout>
+    android:layout_height="0dp"
+    android:id="@+id/btn_start"
+    android:visibility="gone" />
