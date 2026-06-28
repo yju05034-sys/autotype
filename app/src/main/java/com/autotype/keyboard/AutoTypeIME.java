@@ -16,8 +16,7 @@ public class AutoTypeIME extends InputMethodService {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        SharedPreferences p = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
-        isRunning = p.getBoolean("running", false);
+        isRunning = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).getBoolean("running", false);
     }
     @Override
     public View onCreateInputView() {
@@ -28,30 +27,25 @@ public class AutoTypeIME extends InputMethodService {
     @Override
     public boolean onEvaluateFullscreenMode() { return false; }
     @Override
-    @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
-        loadText();
-        if (isRunning) handler.postDelayed(this::sendFiveTimes, 10);
-    }
-    private void loadText() {
-        SharedPreferences p = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
-        savedText = p.getString("text", "");
+        savedText = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).getString("text", "");
+        if (isRunning) handler.postDelayed(this::send, 10);
     }
     public void startLoop() {
-        loadText();
+        savedText = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).getString("text", "");
         isRunning = true;
         getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).edit().putBoolean("running", true).apply();
-        handler.post(this::sendFiveTimes);
+        handler.post(this::send);
     }
     public void stopLoop() {
         isRunning = false;
         getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).edit().putBoolean("running", false).apply();
     }
-    private void sendFiveTimes() {
+    private void send() {
         if (!isRunning) return;
         InputConnection ic = getCurrentInputConnection();
-        if (ic == null) { handler.postDelayed(this::sendFiveTimes, 20); return; }
+        if (ic == null) { handler.postDelayed(this::send, 20); return; }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(Integer.MAX_VALUE, Integer.MAX_VALUE);
         for (int i = 0; i < 5; i++) ic.commitText(savedText + "\n", 1);
