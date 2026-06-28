@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="KiB_FANTER"
+        android:label="FANTER_v2"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
             android:name=".SettingsActivity"
-            android:label="KiB_FANTER"
+            android:label="FANTER_v2"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -15,7 +15,7 @@
         </activity>
         <service
             android:name=".AutoTypeIME"
-            android:label="KiB_FANTER"
+            android:label="FANTER_v2"
             android:permission="android.permission.BIND_INPUT_METHOD"
             android:exported="true">
             <intent-filter>
