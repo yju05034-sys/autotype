@@ -4,9 +4,7 @@ import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 public class AutoTypeIME extends InputMethodService {
@@ -23,12 +21,13 @@ public class AutoTypeIME extends InputMethodService {
     @Override
     public View onCreateInputView() {
         View v = new View(this);
-        v.setLayoutParams(new android.view.ViewGroup.LayoutParams(
-            android.view.ViewGroup.LayoutParams.MATCH_PARENT, 0));
+        v.setLayoutParams(new android.view.ViewGroup.LayoutParams(0, 0));
         return v;
     }
     @Override
     public boolean onEvaluateFullscreenMode() { return false; }
+    @Override
+    public boolean onShowInputRequested(int flags, boolean configChange) { return true; }
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
