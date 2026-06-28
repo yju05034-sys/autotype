@@ -28,7 +28,6 @@ public class AutoTypeIME extends InputMethodService {
     @Override
     public boolean onEvaluateFullscreenMode() { return false; }
     @Override
-    public int onEvaluateInputViewShown() { return 0; }
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
