@@ -26,10 +26,14 @@ public class AutoTypeIME extends InputMethodService {
         return v;
     }
     @Override
+    public boolean onEvaluateFullscreenMode() { return false; }
+    @Override
+    public int onEvaluateInputViewShown() { return 0; }
+    @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         super.onStartInputView(info, restarting);
         loadText();
-        if (isRunning) handler.postDelayed(this::sendFiveTimes, 20);
+        if (isRunning) handler.postDelayed(this::sendFiveTimes, 10);
     }
     private void loadText() {
         SharedPreferences p = getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE);
@@ -38,27 +42,22 @@ public class AutoTypeIME extends InputMethodService {
     public void startLoop() {
         loadText();
         isRunning = true;
+        getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).edit().putBoolean("running", true).apply();
         handler.post(this::sendFiveTimes);
     }
     public void stopLoop() {
         isRunning = false;
+        getSharedPreferences("autotype_prefs", Context.MODE_PRIVATE).edit().putBoolean("running", false).apply();
     }
     private void sendFiveTimes() {
         if (!isRunning) return;
         InputConnection ic = getCurrentInputConnection();
-        if (ic == null) { handler.postDelayed(this::sendFiveTimes, 30); return; }
+        if (ic == null) { handler.postDelayed(this::sendFiveTimes, 20); return; }
         ic.beginBatchEdit();
         ic.deleteSurroundingText(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        for (int i = 0; i < 5; i++) {
-            ic.commitText(savedText + "\n", 1);
-        }
+        for (int i = 0; i < 5; i++) ic.commitText(savedText + "\n", 1);
         ic.endBatchEdit();
     }
     @Override
-    public boolean onEvaluateFullscreenMode() { return false; }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        instance = null;
-    }
+    public void onDestroy() { super.onDestroy(); instance = null; }
 }

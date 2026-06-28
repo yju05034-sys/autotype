@@ -30,13 +30,13 @@ public class SettingsActivity extends Activity {
         btnStart.setOnClickListener(v -> {
             prefs.edit().putBoolean("running", true).apply();
             if (AutoTypeIME.instance != null) AutoTypeIME.instance.startLoop();
-            tvStatus.setText("🟢 در حال اجرا");
+            tvStatus.setText("💀 در حال اجرا");
             finish();
         });
         btnStop.setOnClickListener(v -> {
             prefs.edit().putBoolean("running", false).apply();
             if (AutoTypeIME.instance != null) AutoTypeIME.instance.stopLoop();
-            tvStatus.setText("⏹ متوقف");
+            tvStatus.setText("⛔ متوقف شد");
         });
         btnEnable.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS)));
         btnSelect.setOnClickListener(v -> ((InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE)).showInputMethodPicker());
